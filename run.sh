@@ -1,5 +1,10 @@
-$HOME/desktop/projects/bitcoin/src/bitcoind -regtest -daemon
-$HOME/desktop/projects/bitcoin/src/bitcoind -regtest -datadir=$HOME/desktop/projects/bitcoin-regtest/alice -daemon
-$HOME/desktop/projects/bitcoin/src/bitcoind -regtest -datadir=$HOME/desktop/projects/bitcoin-regtest/bob -daemon
+#!/bin/bash
+
+
+. ./.env
+
+$BITCOIN_PROJ_PATH/src/bitcoind -regtest -daemon
+$BITCOIN_PROJ_PATH/src/bitcoind -regtest -datadir=./alice -daemon
+$BITCOIN_PROJ_PATH/src/bitcoind -regtest -datadir=./bob -daemon
 
 
