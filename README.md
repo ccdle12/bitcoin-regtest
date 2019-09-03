@@ -16,7 +16,7 @@ There are certain assumptions...
 
 * `./run.sh` will set up the network with `alice` + `bob`
 
-* bitcoin-cli -regtest getpeerinfo `get network info`
+* run  `$ bitcoin-cli -regtest getpeerinfo`
 
 ## Mine Blocks
 
