@@ -4,4 +4,4 @@
 . ./.env
 
 cd $BITCOIN_PROJ_PATH 
-make
+make clean && ./autogen.sh && ./configure --without-gui && make
