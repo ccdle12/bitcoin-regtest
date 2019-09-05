@@ -5,10 +5,6 @@
 
 source_env
 
-# cd ./alice && rm -rf ./regtest/
-# cd ../bob && rm -rf ./regtest/
-# cd ../
-
 rm -rf alice/regtest/
 rm -rf bob/regtest/
 
