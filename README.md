@@ -1,6 +1,6 @@
 # Regtest Helper
 
-This project is a simple project that helps run regtest on my machine (OSX).
+This project helps run regtest.
 
 There are certain assumptions... 
 
@@ -10,28 +10,18 @@ There are certain assumptions...
 ## Compiling Bitcoin
 
 * After updating `.env` with the path to your Bitcoin folder
-* Run `./recompile-bitcoin.sh`
+* Run `./install.sh`
 
 ## Setting up the regtest
 
-* `./run.sh` will set up the network with `alice` + `bob`
+* `./setup-nodes.sh` will set up the network with `alice` + `bob`
 
 * run  `$ bitcoin-cli -regtest getpeerinfo`
 
-## Mine Blocks
+## Resetting the network
 
-* Generate an address to mine blocks and send the reward to
-
-```
-$ bitcoin-cli -regtest getnewaddress
-$ 2N27uxsqgtKs2mErVLb2CN8yp5TuRqZLb1E
-```
-
-* Mine x number of blocks
-
-```
-$ bitcoin-cli -regtest generatetoaddress 10 2N27uxsqgtKs2mErVLb2CN8yp5TuRqZLb1E
-```
+* `reset-network.sh` will reset the regtest chain state to 0.
+* `setup-nodes.sh` to run the nodes again.
 
 ## Generate address for alice
 
