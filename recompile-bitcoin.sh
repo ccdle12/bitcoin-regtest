@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Source the env file to use the env variable.
-. ./.env
+# Import common functions.
+. ./common.sh --source-only
+
+source_env
 
 cd $BITCOIN_PROJ_PATH 
 make

@@ -1,5 +1,8 @@
 #!/bin/bash
 
-. ./.env
+# Import common functions.
+. ./common.sh --source-only
 
-$BITCOIN_PROJ_PATH/src/bitcoin-cli -regtest -datadir=./bob $*
+source_env
+
+$BITCOIN_CLI -regtest -datadir=./bob $*
