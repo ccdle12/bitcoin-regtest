@@ -5,6 +5,5 @@
 
 source_env
 
-$BITCOIN_D -regtest -daemon
 $BITCOIN_D -regtest -datadir=./alice -daemon
 $BITCOIN_D -regtest -datadir=./bob -daemon
