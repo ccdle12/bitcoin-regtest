@@ -5,55 +5,68 @@ This project helps run regtest.
 There are certain assumptions... 
 
 * You have Bitcoin already cloned on your machine
-* Update the .env file with the path of your Bitcoin folder
+* You have already compiled Bitcoin
+* [Linux guide to compiling Bitcoin](https://gist.github.com/jonatack/9f57d398656433de5a5e04d5e0e4447e)
 
-## Compiling Bitcoin
+## Build the CLI
 
-* After updating `.env` with the path to your Bitcoin folder
-* Run `./install.sh`
+- Build the CLI:
+
+```
+$ cd ./cli && cargo build
+```
+
+- Move the binary to preferred location (OPTIONAL)
+
+## Set environment variables
+
+```
+BITCOIN_PROJ_PATH=<path-to-bitcoin-folder>
+REGTEST_ALICE=<path-to-alice-folder>
+REGTEST_BOB=<path-to-bob-folder>
+```
 
 ## Setting up the regtest
 
-* `./setup-nodes.sh` will set up the network with `alice` + `bob`
-
-* run  `$ bitcoin-cli -regtest getpeerinfo`
+- `$ regtest-cli setupnodes`
 
 ## Resetting the network
 
-* `reset-network.sh` will reset the regtest chain state to 0.
-* `setup-nodes.sh` to run the nodes again.
+- `$ regtest resetnetwork`
+- `$ regtest setupnodes`
 
-## Generate address for alice
+## RPC Commands
+
+- [List of Bitcoin RPC Calls](https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list)
 
 ```
-$ ./alice.sh getnewaddress
+$ regtest-cli --rpc getnewaddress
 $ 2N3St5nSMEKJ4PNq5eNAzjPvJjYQigHyhVg
 ```
 
-* Check balance
+- Check balance
 
 ```
-$ ./alice.sh getnewaddress
+$ regtest-cli alice --rpc getbalance
 ```
 
-* Generate 200 blocks
+- Generate 200 blocks
 
 ```
-$ ./alice.sh generatetoaddress 200 2N3St5nSMEKJ4PNq5eNAzjPvJjYQigHyhVg 
+$ regteest-cli alice --rpc generatetoaddress 200 2N3St5nSMEKJ4PNq5eNAzjPvJjYQigHyhVg 
 ```
 
-* Generate an address for Bob
+- Generate an address for Bob
 
 ```
-$ ./bob.sh getnewaddress
+$ regtest-cli bob --rpc getnewaddress
 $ 2NDMYM2i9cTj2nd9z7cXhY5q9uMfYsvz41w
 ```
 
-* Send coins from Alice to Bob
+- Send coins from Alice to Bob
 
-Returns a tx hash
 ```
-$ ./alice.sh sendtoaddress 2NDMYM2i9cTj2nd9z7cXhY5q9uMfYsvz41w 10
+$ regtest-cli alice --rpc sendtoaddress 2NDMYM2i9cTj2nd9z7cXhY5q9uMfYsvz41w 10
 $ ca5883432e0c6e6660c47707acd66d17b95ef2eda3d7a2890d9ebbca3c8767f4
 ```
 
@@ -62,7 +75,7 @@ $ ca5883432e0c6e6660c47707acd66d17b95ef2eda3d7a2890d9ebbca3c8767f4
 We are looking for 0 confirmation transactions.
 
 ```
-$ ./bob.sh listunspent 0
+$ regtest-cli bob --rpc listunspent 0
 $ [
   {
     "txid": "ca5883432e0c6e6660c47707acd66d17b95ef2eda3d7a2890d9ebbca3c8767f4",

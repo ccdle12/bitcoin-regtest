@@ -4,6 +4,7 @@
 extern crate clap;
 use clap::{clap_app, ArgMatches};
 use std::env;
+use std::fs;
 use std::process::Command;
 use std::str;
 
@@ -65,11 +66,13 @@ fn main() {
 /// Recompiles the Bitcoin project according to the Path set in the environment.
 fn recompile_bitcoin() {
     let bitcoin_path = env::var_os(BITCOIN_PROJ_PATH)
-                        .expect("Environment variable BITCOIN_PROJ_PATH is empty");
+                        .expect("Environment variable BITCOIN_PROJ_PATH is empty")
+                        .into_string()
+                        .unwrap();
 
     Command::new("sh")
         .arg("-c")
-        .arg(format!("cd {} && make", bitcoin_path.into_string().unwrap()))
+        .arg(format!("cd {} && make", bitcoin_path))
         .output()
         .map(|process| {
             if !process.status.success() {
@@ -86,21 +89,13 @@ fn run_regtest_nodes() {
     let bitcoin_path = env::var_os(BITCOIN_PROJ_PATH)
                         .expect("Environment variable BITCOIN_PROJ_PATH is empty");
 
-    let alice_path = env::var_os(ALICE_PATH)
-                        .expect("Environment variable ALICE_PATH is empty")
-                        .into_string()
-                        .expect("Failed to convert Alice Path to String");
-
-    let bob_path = env::var_os(BOB_PATH)
-                    .expect("Environment variable BOB_PATH is empty")
-                    .into_string()
-                    .expect("Failed to convert Bob Path to String");
-        
     let bitcoind = bitcoin_path.into_string().unwrap() + BITCOIN_D;
 
     Command::new("sh")
             .arg("-c")
-            .arg(format!("{} -regtest -datadir={} -daemon", bitcoind, alice_path))
+            .arg(format!("{} -regtest -datadir={} -daemon", 
+                    bitcoind, get_alice_path())
+            )
             .output()
             .map(|process| {
                 if !process.status.success() {
@@ -113,7 +108,9 @@ fn run_regtest_nodes() {
 
     Command::new("sh")
             .arg("-c")
-            .arg(format!("{} -regtest -datadir={} -daemon", bitcoind, bob_path))
+            .arg(format!("{} -regtest -datadir={} -daemon", 
+                    bitcoind, get_bob_path())
+            )
             .output()
             .map(|process| {
                 if !process.status.success() {
@@ -142,10 +139,10 @@ fn run_bitcoin_rpc(cmd: &ArgMatches, node: RegtestNode) {
 }
 
 fn exec_rpc_command(cmd: String, node_path: &str) {
-    let bitcoin_path = env::var_os(BITCOIN_PROJ_PATH)
-                        .expect("Environment variable BITCOIN_PROJ_PATH is empty");
-
-    let bitcoin_cli = bitcoin_path.into_string().unwrap() + BITCOIN_CLI;
+    let bitcoin_cli = env::var_os(BITCOIN_PROJ_PATH)
+                        .expect("Environment variable BITCOIN_PROJ_PATH is empty")
+                        .into_string()
+                        .unwrap() + BITCOIN_CLI;
 
     let path = env::var_os(node_path)
                         .expect("Environment variable for node path is empty")
@@ -171,25 +168,31 @@ fn reset_network() {
     exec_rpc_command("stop".to_string(), ALICE_PATH);
     exec_rpc_command("stop".to_string(), BOB_PATH);
 
-    Command::new("sh")
-            .arg("-c")
-            .arg(format!("rm -rf {}/regtest/", ALICE_PATH))
-            .output()
-            .map(|process| {
-                if !process.status.success() {
-                    println!("{}", str::from_utf8(&process.stderr).unwrap())
-                }
-            })
-            .unwrap();
+    match fs::remove_dir_all(format!("{}/regtest/", get_alice_path())) {
+        Err(e) => {
+            println!("ALICE_PATH: {}", e);
+        },
+        _ => (),
+    }
 
-    Command::new("sh")
-            .arg("-c")
-            .arg(format!("rm -rf {}/regtest/", BOB_PATH))
-            .output()
-            .map(|process| {
-                if !process.status.success() {
-                    println!("{}", str::from_utf8(&process.stderr).unwrap())
-                }
-            })
-            .unwrap();
+    match fs::remove_dir_all(format!("{}/regtest/", get_bob_path())) {
+        Err(e) => {
+            println!("BOB_PATH: {}", e);
+        },
+        _ => (),
+    }
+}
+
+fn get_alice_path() -> String {
+    env::var_os(ALICE_PATH)
+        .expect("Environment variable ALICE_PATH is empty")
+        .into_string()
+        .expect("Failed to convert ALICE_PATH to String")
+}
+
+fn get_bob_path() -> String {
+    env::var_os(BOB_PATH)
+        .expect("Environment variable BOB_PATH is empty")
+        .into_string()
+        .expect("Failed to convert BOB_PATH to String")
 }
