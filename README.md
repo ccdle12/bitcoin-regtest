@@ -40,7 +40,7 @@ REGTEST_BOB=<path-to-bob-folder>
 - [List of Bitcoin RPC Calls](https://en.bitcoin.it/wiki/Original_Bitcoin_client/API_calls_list)
 
 ```
-$ regtest-cli --rpc getnewaddress
+$ regtest-cli alice --rpc getnewaddress
 $ 2N3St5nSMEKJ4PNq5eNAzjPvJjYQigHyhVg
 ```
 
@@ -53,7 +53,7 @@ $ regtest-cli alice --rpc getbalance
 - Generate 200 blocks
 
 ```
-$ regteest-cli alice --rpc generatetoaddress 200 2N3St5nSMEKJ4PNq5eNAzjPvJjYQigHyhVg 
+$ regtest-cli alice --rpc generatetoaddress 200 2N3St5nSMEKJ4PNq5eNAzjPvJjYQigHyhVg 
 ```
 
 - Generate an address for Bob
